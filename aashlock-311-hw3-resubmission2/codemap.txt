@@ -1,0 +1,113 @@
+Here is the code map for the implementation. 
+
+class GameBoard // main class for this project: this will be public
+class Configuration  // Configuration is the state of the gameboard.
+                     // This is captured using ArrayList of int[2] or int[3] containing the position of each vehicle.
+class Pair
+class HashKey
+
+
+Description of elements in GameBoard Class:
+------------------------------------------
+
+1. It has an attribute initConfig of type Configuration 
+
+2. It has an attribute explored of type HashMap<HashKey, Configuration> 
+
+3. It has a method readInput as follows (use this):
+
+         public void readInput(String fName) throws IOException {
+                FileInputStream fstream = new FileInputStream(fName);
+                BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+                String strLine;
+
+                String[] strEl;
+                int numOfVehicles;
+                int[] locs;
+
+                // reading the first line for the numOfVehicles                                  
+                strLine = br.readLine();
+                strEl = strLine.trim().split("\\s+");
+                numOfVehicles = Integer.parseInt(strEl[0]);
+                initConfig = new Configuration();
+                ArrayList<int[]> vehicles = new ArrayList<>();
+
+                for (int i=0; i<numOfVehicles; i++) {
+                        strLine = br.readLine();
+                        strEl = strLine.trim().split("\\s+");
+                        locs = new int[strEl.length];
+                        for (int j=0; j<locs.length; j++) {
+                                locs[j] = Integer.parseInt(strEl[j]);
+                        }
+                        vehicles.add(locs);
+                }
+                initConfig.setVehicles(vehicles);
+        }
+
+  
+4. It has a method getPlan with return type ArrayList<Pair>
+
+        ArrayList<Pair> getPlan() {
+                // you will need to implement this to get a path
+	            // this will call the method explore, an implementation of
+	            // breadth-first exploration
+	            // retrieves the path/plan using the parent information
+	            // starting from the (/any) goal configuration
+        }
+
+5. It has method explore with return type Configuration. It will
+   return the goal configuration that is reached in a shortest path.
+   The exploration should also keep track of the "parent" of each
+   configuration. This will be used in generating the path by traversing
+   backwards from the goal state.
+
+   Exploration will be involved from getPlan with the argument initConfig.
+   
+       Configuration explore(Configuration i) {
+                // you will need to implement this as BFS
+	            // the explored hashmap keeps track of already visited Configurations
+
+                // To use the hashmap explored and put a configuration c
+	            // explored.put(new HashKey(c.getLastLocs()), c)
+	            // the getLastLocs is method in the Configuration class that computes
+	            // the rightmost or bottommost positions of vehicles in the Configuration
+	            // For example: if a vehicle is at [14, 15], its last loc is 15.
+
+                // To use the hashmap explored and check for existence of configuration c
+	            // use explored.get(new HashKey(c.getLastLocs()));
+
+                // Inside explore, we will need to have a method that
+	            // computes the neighbor of a configuration. So, we need to write
+	            // a method getNext method for the objects of type Configuration (see below)
+       }
+
+
+Description of elements in Configuration Class:
+----------------------------------------------
+
+1. It has an attribute ArrayList<int[]> vehicles; // this captures the vehicle locations for the configuration
+
+2. It has an attribute Configuration parent; // this is used in explore method to set the parent for each Configuration
+
+3. It has a method getLastLocs as follows:
+
+        public int[] getLastLocs() {
+                int[] res = new int[vehicles.size()];
+                for (int i=0; i<vehicles.size(); i++) {
+                        int[] locs = vehicles.get(i);
+                        res[i] = locs[locs.length-1];
+                }
+                return res;
+        }
+
+
+4. It has a method getNext to compute the neighbors
+
+        public ArrayList<Configuration> getNext() {
+                // you will have to implement this
+	            // Knowing the locations of each vehicle,
+	            // loop over each vehicle and find the new positions
+	            // each can go and generate new Configurations
+	    }
+
+Description of Pair and Hashkey should not be changed.
